@@ -15,7 +15,27 @@ function init(bundle, parent, options) {
     ...options
   });
   vr.start();
+  window.playerCamera = vr.player._camera;
+  window.vr = vr;
+  window.onmousewheel = onRendererMouseWheel;
   return vr;
 }
 
 window.ReactVR = { init };
+
+
+
+function onRendererMouseWheel(){
+  if (event.deltaY > 0 ){
+     if(window.playerCamera.zoom  > 1) {
+       window.playerCamera.zoom -= 0.1;
+       window.playerCamera.updateProjectionMatrix();
+      }
+   }
+   else {
+     if(window.playerCamera.zoom < 3) {
+      window.playerCamera.zoom += 0.1;
+      window.playerCamera.updateProjectionMatrix();
+     }
+   }
+}
