@@ -4,7 +4,9 @@ import {
   AppRegistry,
   asset,
   Image,
+  Model,
   Pano,
+  Sound,
   Text,
   View,
   Video,
@@ -12,9 +14,11 @@ import {
   Value,
   MediaPlayerState,
   VideoControl,
+  AmbientLight,
 } from 'react-vr';
 import GazeButton from 'react-vr-gaze-button'
 import * as THREE from 'three';
+import { Easing } from 'react-native';
 
 export default class AutomationVR extends React.Component {
 
@@ -24,15 +28,48 @@ export default class AutomationVR extends React.Component {
         this.state = {
             buttonIsClicked: false,
             playerState: new MediaPlayerState({autoPlay: false, muted: true}), // init with muted, autoPlay
-            fadeAnim: new Animated.Value(0), // init opacity 0
-            stage: 'office.jpg',
-            stage2: 'chess-world.jpg',
-            stage3: 'lobby.jpg',
-            chevron: 'chevron.png',
+            spin: new Animated.Value(0), // init opacity 0
+            stage: 'office.jpg'
         };
 
   }
+  animateIn = () => {
+    Animated.timing(
+      this.state.animatedTranslation,
+      {
+        toValue: 0.125,
+        duration: 100,
+        easing: Easing.in,
+      }
+    ).start();
+  }
 
+  animateOut = () => {
+    Animated.timing(
+      this.state.animatedTranslation,
+      {
+        toValue: 0,
+        duration: 100,
+        easing: Easing.in,
+      }
+    ).start();
+  }
+
+  componentDidMount() {
+    this.spinAnimation();
+  }
+
+  spinAnimation() {
+    this.state.spin.setValue(0);
+    Animated.timing(
+      this.state.spin,
+      {
+       toValue: 1,
+       duration: 3000,
+       easing: Easing.linear
+      }
+    ).start( () => this.spinAnimation() );
+  }
 
 
 
@@ -41,17 +78,47 @@ export default class AutomationVR extends React.Component {
       if(this.state.stage == 'office.jpg')
         this.setState(() => ({ stage: 'lobby.jpg' }));
       else if(this.state.stage == 'lobby.jpg')
+        this.setState(() => ({ stage: 'office1.jpg' }));
+      else if(this.state.stage == 'office1.jpg')
         this.setState(() => ({ stage: 'office.jpg' }));
     }
 
   render() {
 
       const {buttonIsClicked} = this.state
+      const spin = this.state.spin.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['0deg', '360deg']
+      });
+
+      var AnimatedModel = Animated.createAnimatedComponent(Model);
 
         return (
-
           <View>
             <Pano source={asset(this.state.stage)}/>
+            <AmbientLight intensity={ 2.0 }  />
+
+            <VrButton onClick={()=>this.toggle()} duration={3000}
+              style={{position: 'relative', height: .2, width: .2, backgroundColor: '#ff0000', layoutOrigin: [-0.5, -0.5],
+              transform: [{translate: [0, 0, 2]}]}}
+
+                onEnterSound={{
+                  mp3: asset('bugattiSFX.mp3'),
+                }}
+                />
+
+          <AnimatedModel
+              source={{
+                obj: asset('bugatti.obj'),
+                mtl: asset('bugatti.mtl'),
+              }}
+              scale={0.2}
+              style={{position: 'absolute', height: .1, width: .1, layoutOrigin: [0, -10],
+              transform: [{translate: [0, -6, 20]}, {rotateY: spin}]}}
+              lit={true}
+              />
+
+
                 <Video onEnter={()=>this.state.playerState.play()}
                        onExit={()=>this.state.playerState.pause()}
                        style={{position: 'absolute', height: 2.5, width: 4, layoutOrigin: [1.5, 0.45], transform: [{translate: [0, 0, -2.8]}, {rotateY: -270}]}}

@@ -63,9 +63,9 @@
     <script src="./client.bundle?platform=vr"></script>
     <script>
       ReactVR.init('../index.vr.bundle?platform=vr&dev=true', document.getElementById('content'));
-      window.onload = function (){
-        document.getElementById('loader').style.display = "none";
-      }
+      window.setTimeout(window.onload = function (){
+        document.getElementById('loader').style.display = "none"
+      }, 10000);
     </script>
   </body>
 </html>
