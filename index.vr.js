@@ -19,6 +19,7 @@ import {
 import GazeButton from 'react-vr-gaze-button'
 import * as THREE from 'three';
 import { Easing } from 'react-native';
+import BouncingText from './Components/BouncingText';
 
 export default class AutomationVR extends React.Component {
 
@@ -81,6 +82,14 @@ export default class AutomationVR extends React.Component {
         this.setState(() => ({ stage: 'office1.jpg' }));
       else if(this.state.stage == 'office1.jpg')
         this.setState(() => ({ stage: 'office.jpg' }));
+
+return (
+        React.createElement(
+        BouncingText,
+        {layoutOrigin: [0.2, 0.2]},
+        'Click Me'
+      )
+    )
     }
 
   render() {
@@ -97,7 +106,7 @@ export default class AutomationVR extends React.Component {
           <View>
             <Pano source={asset(this.state.stage)}/>
             <AmbientLight intensity={ 2.0 }  />
-
+             <BouncingText />
             <VrButton onClick={()=>this.toggle()} duration={3000}
               style={{position: 'relative', height: .2, width: .2, backgroundColor: '#ff0000', layoutOrigin: [-0.5, -0.5],
               transform: [{translate: [0, 0, 2]}]}}
@@ -129,15 +138,16 @@ export default class AutomationVR extends React.Component {
                        style={{position: 'absolute', height: 0.2, width: 4, layoutOrigin: [1.5, -6.2], transform: [{translate: [0, 0, -2.8]}, {rotateY: -270}]}}
                        playerState={this.state.playerState} />
 
-            <GazeButton onClick={()=>this.toggle()}  duration={3000}>
+            <GazeButton onClick={()=>this.toggle()}  style={{
+                              position: 'absolute'}} duration={3000}>
                       {time => (
                         <Text style={{
                                           backgroundColor: '#000',
                                           fontSize: 0.8,
                                           fontWeight: '400',
                                           layoutOrigin: [0.5, 1.5],
-                                          paddingLeft: 0.2,
-                                          paddingRight: 0.2,
+                                          marginLeft: 0.5,
+                                          marginRight: 0.5,
                                           textAlign: 'center',
                                           textAlignVertical: 'center',
                                           transform: [{translate: [0, 0, -8]}],
