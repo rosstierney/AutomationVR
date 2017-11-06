@@ -37,15 +37,22 @@ export default class AutomationVR extends React.Component {
 
     toggle()
     {
-      if(this.state.stage == 'office.jpg')
+      switch(this.state.stage)
       {
-        this.setState(() => ({ stage: 'lobby.jpg' }));
-        return <AnimatedModels />
+        case 'office.jpg':
+        {
+          this.setState(() => ({ stage: 'lobby.jpg' }));
+          return <AnimatedModels />
+        }
+        case 'lobby.jpg':
+        {
+          this.setState(() => ({ stage: 'office1.jpg' }));
+        }
+        case 'office1.jpg':
+        {
+          this.setState(() => ({ stage: 'office.jpg' }));
+        }
       }
-      else if(this.state.stage == 'lobby.jpg')
-        this.setState(() => ({ stage: 'office1.jpg' }));
-      else if(this.state.stage == 'office1.jpg')
-        this.setState(() => ({ stage: 'office.jpg' }));
     }
 
     renderModel()
@@ -65,7 +72,7 @@ export default class AutomationVR extends React.Component {
               <PointLight
                 style={{
                   color:'white', transform:[{translate:[0, 0, 0]}]
-                }} 
+                }}
               />
                <BouncingText />
               <VrButton onClick={()=>this.toggle()} duration={3000}
